@@ -46,10 +46,17 @@ jobs:
                 ./spiketest.js
             flags: -e url=${{github.event.inputs.target_url}}
         
-        - name: Run breapoint test
+        - name: Run soak test
           uses: grafana/run-k6-action@v1
           with:
             path: |
                 ./soaktest.js
             flags: -e url=${{github.event.inputs.target_url}}
             
+        - name: Run broker test
+          uses: grafana/run-k6-action@v1
+          with:
+            path: |
+                ./brokertest.js
+            flags: -e url=${{github.event.inputs.target_url}}
+              
