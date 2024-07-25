@@ -1,0 +1,55 @@
+name: Load testing 
+
+on: 
+    workflow_dispatch:
+        inputs:
+            target_url:
+                description: Url target
+                required: true
+
+jobs:
+    load-test:
+        runs-on: ubuntu-latest
+
+        steps:
+        - name: Checkout repository
+          uses: actions/checkout@v4
+
+        - name: Install k6
+          uses: grafana/setup-k6-action@v1
+          
+        - name: Run average test
+          uses: grafana/run-k6-action@v1
+          with:
+            path: |
+                ./averagetest.js
+            flags: -e url=${{github.event.inputs.target_url}}
+
+        - name: Run stress test
+          uses: grafana/run-k6-action@v1
+          with:
+            path: |
+                 ./stresstest.js
+            flags: -e url=${{github.event.inputs.target_url}}
+        
+        - name: Run breapoint test
+          uses: grafana/run-k6-action@v1
+          with:
+            path: |
+                ./breakpointtest.js
+            flags: -e url=${{github.event.inputs.target_url}}
+            
+        - name: Run spike test
+          uses: grafana/run-k6-action@v1
+          with:
+            path: |
+                ./spiketest.js
+            flags: -e url=${{github.event.inputs.target_url}}
+        
+        - name: Run breapoint test
+          uses: grafana/run-k6-action@v1
+          with:
+            path: |
+                ./soaktest.js
+            flags: -e url=${{github.event.inputs.target_url}}
+            
